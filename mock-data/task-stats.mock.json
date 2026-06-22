@@ -1,0 +1,40 @@
+{
+  "totalTasks": 16,
+  "recruitingTasks": 14,
+  "inProgressTasks": 2,
+  "closedTasks": 1,
+  "totalApplications": 19,
+  "avgBudget": 22500,
+  "categoryDistribution": {
+    "web": 6,
+    "mobile": 5,
+    "ai": 3,
+    "design-system": 1,
+    "other": 1
+  },
+  "stackDistribution": {
+    "react": 5,
+    "typescript": 7,
+    "nodejs": 4,
+    "python": 3,
+    "nextjs": 3,
+    "vue": 3,
+    "flutter": 2,
+    "swift": 2,
+    "go": 2,
+    "fastapi": 2,
+    "other": 6
+  },
+  "recentPublishedTasks": [
+    "task-011",
+    "task-001",
+    "task-005",
+    "task-016"
+  ],
+  "hotTasks": [
+    "task-001",
+    "task-002",
+    "task-008",
+    "task-013"
+  ]
+}

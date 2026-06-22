@@ -1,0 +1,435 @@
+<!--
+    [FILE] task-hall.html
+    [POS] 任务大厅页面 - 展示全部任务，支持筛选、搜索、排序、分页
+    [IN] 无
+    [OUT] 渲染后的 DOM 结构
+    [DEP] assets/css/* (样式), assets/js/task-*.js (交互)
+    [SIDE EFFECT] 通过 CSS/JS 文件引用触发样式渲染和交互初始化
+    [TEST] 手动测试: 在浏览器中打开并验证所有功能
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="浏览和筛选软件定制任务，找到适合您的项目">
+    <title>任务大厅 - TechCraft</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/task-hall.css">
+    <link rel="stylesheet" href="assets/css/task-detail.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div data-layout="navbar"></div>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1 class="page-title">任务大厅</h1>
+            <p class="page-subtitle">浏览所有可用任务，找到适合您的项目</p>
+        </div>
+    </header>
+
+    <!-- Filter Bar -->
+    <section class="filter-bar">
+        <div class="container">
+            <div class="filter-bar-container">
+                <!-- Search -->
+                <div class="filter-search form-search">
+                    <svg class="form-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="搜索任务标题、描述..."
+                        autocomplete="off"
+                    >
+                </div>
+
+                <!-- Results Count -->
+                <div class="filter-results">
+                    找到 <span class="filter-results-count" id="resultsCount">0</span> 个任务
+                </div>
+
+                <!-- Actions -->
+                <div class="filter-actions">
+                    <!-- Publish Task Button (Client Only) -->
+                    <a
+                        href="create-task.html"
+                        class="btn btn-primary btn-sm"
+                        data-show-role="client"
+                        style="display: none;"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        发布任务
+                    </a>
+
+                    <!-- Mobile Filter Toggle -->
+                    <button type="button" class="btn btn-secondary btn-sm filter-toggle-btn" id="filterToggleBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        筛选
+                    </button>
+
+                    <!-- Sort -->
+                    <div class="filter-sort">
+                        <select id="sortSelect" aria-label="排序方式">
+                            <option value="updated-desc">最新更新</option>
+                            <option value="budget-desc">预算从高到低</option>
+                            <option value="budget-asc">预算从低到高</option>
+                            <option value="deadline-asc">截止时间</option>
+                        </select>
+                    </div>
+
+                    <!-- Clear Filters -->
+                    <button type="button" class="filter-clear hidden" id="clearFiltersBtn">清空筛选</button>
+                </div>
+            </div>
+
+            <!-- Active Filters -->
+            <div class="active-filters" id="activeFilters"></div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="task-hall-main">
+        <div class="container">
+            <div class="task-hall-content">
+                <!-- Filter Sidebar -->
+                <aside class="filter-sidebar" id="filterSidebar" aria-label="任务筛选">
+                    <div class="filter-sidebar__header">
+                        <h2 class="filter-sidebar__title">筛选任务</h2>
+                        <button type="button" class="filter-sidebar__reset" id="resetFiltersBtn">重置</button>
+                    </div>
+
+                    <!-- Task Category -->
+                    <section class="filter-group" data-filter-type="category">
+                        <button
+                            type="button"
+                            class="filter-group__toggle"
+                            aria-expanded="true"
+                            aria-controls="filter-group-category"
+                        >
+                            任务类型
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="filter-group-category" class="filter-group__content">
+                            <div class="filter-options" id="filterOptions-category">
+                                <!-- Dynamically populated by JS -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tech Stack -->
+                    <section class="filter-group" data-filter-type="stack">
+                        <button
+                            type="button"
+                            class="filter-group__toggle"
+                            aria-expanded="true"
+                            aria-controls="filter-group-stack"
+                        >
+                            技术栈
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="filter-group-stack" class="filter-group__content">
+                            <div class="filter-options" id="filterOptions-stack">
+                                <!-- Dynamically populated by JS -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Delivery Mode -->
+                    <section class="filter-group" data-filter-type="deliveryMode">
+                        <button
+                            type="button"
+                            class="filter-group__toggle"
+                            aria-expanded="true"
+                            aria-controls="filter-group-deliveryMode"
+                        >
+                            交付模式
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="filter-group-deliveryMode" class="filter-group__content">
+                            <div class="filter-options" id="filterOptions-deliveryMode">
+                                <!-- Dynamically populated by JS -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Budget Range -->
+                    <section class="filter-group" data-filter-type="budgetRange">
+                        <button
+                            type="button"
+                            class="filter-group__toggle"
+                            aria-expanded="true"
+                            aria-controls="filter-group-budgetRange"
+                        >
+                            预算范围
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="filter-group-budgetRange" class="filter-group__content">
+                            <div class="filter-options" id="filterOptions-budgetRange">
+                                <!-- Dynamically populated by JS -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Duration Range -->
+                    <section class="filter-group" data-filter-type="durationRange">
+                        <button
+                            type="button"
+                            class="filter-group__toggle"
+                            aria-expanded="true"
+                            aria-controls="filter-group-durationRange"
+                        >
+                            工期范围
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="filter-group-durationRange" class="filter-group__content">
+                            <div class="filter-options" id="filterOptions-durationRange">
+                                <!-- Dynamically populated by JS -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Status -->
+                    <section class="filter-group" data-filter-type="status">
+                        <button
+                            type="button"
+                            class="filter-group__toggle"
+                            aria-expanded="true"
+                            aria-controls="filter-group-status"
+                        >
+                            任务状态
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="filter-group-status" class="filter-group__content">
+                            <div class="filter-options" id="filterOptions-status">
+                                <!-- Dynamically populated by JS -->
+                            </div>
+                        </div>
+                    </section>
+                </aside>
+
+                <!-- Task List -->
+                <div class="task-list">
+                    <!-- Loading State -->
+                    <div id="loadingState" class="task-list-grid" style="display: none;">
+                        <!-- Skeleton cards will be inserted by JS -->
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="errorState" class="error-state" style="display: none;">
+                        <svg class="error-state-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                        </svg>
+                        <h3 class="error-state-title">任务加载失败</h3>
+                        <p class="error-state-description">暂时无法获取任务列表，请稍后重试。</p>
+                        <button type="button" class="btn btn-primary" id="retryBtn">重新加载</button>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <svg class="empty-state-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                        <h3 class="empty-state-title">没有找到符合条件的任务</h3>
+                        <p class="empty-state-description">试试减少筛选条件，或更换关键词。</p>
+                        <button type="button" class="btn btn-secondary" id="clearEmptyFiltersBtn">清空筛选</button>
+                    </div>
+
+                    <!-- Task Cards -->
+                    <div id="taskList" class="task-list-grid">
+                        <!-- Task cards will be inserted by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pagination -->
+    <footer class="task-hall-footer">
+        <div class="container">
+            <nav class="pagination" id="pagination" aria-label="分页导航">
+                <!-- Pagination will be inserted by JS -->
+            </nav>
+        </div>
+    </footer>
+
+    <!-- Footer -->
+    <div data-layout="footer"></div>
+
+    <!-- Back to Top -->
+    <div data-layout="back-to-top"></div>
+
+    <!-- Mobile Filter Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="drawer" id="filterDrawer" aria-hidden="true">
+        <div class="drawer-header">
+            <h3 class="drawer-title">筛选任务</h3>
+            <button type="button" class="drawer-close" id="drawerCloseBtn" aria-label="关闭">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="drawer-body" id="drawerBody">
+            <!-- Filter options will be cloned here -->
+        </div>
+        <div class="drawer-footer">
+            <button type="button" class="btn btn-secondary btn-full" id="drawerCancelBtn">取消</button>
+            <button type="button" class="btn btn-primary btn-full" id="drawerApplyBtn">应用筛选</button>
+        </div>
+    </div>
+
+    <!-- Task Preview Drawer -->
+    <div class="task-preview-drawer-overlay" id="taskPreviewDrawerOverlay"></div>
+    <aside class="task-preview-drawer" id="taskPreviewDrawer" aria-hidden="true" aria-label="任务预览">
+        <div class="task-preview-drawer__header">
+            <div class="task-preview-drawer__header-left">
+                <span class="task-preview-drawer__status" id="previewStatus"></span>
+            </div>
+            <button type="button" class="task-preview-drawer__close" id="taskPreviewDrawerCloseBtn" aria-label="关闭">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="task-preview-drawer__body" id="taskPreviewDrawerBody">
+            <!-- Loading State -->
+            <div class="task-preview-drawer__loading" id="previewLoadingState" style="display: none;">
+                <div class="task-preview-drawer__skeleton"></div>
+                <div class="task-preview-drawer__skeleton"></div>
+                <div class="task-preview-drawer__skeleton"></div>
+            </div>
+
+            <!-- Error State -->
+            <div class="task-preview-drawer__error" id="previewErrorState" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+                <p>任务加载失败</p>
+            </div>
+
+            <!-- Content State -->
+            <div class="task-preview-drawer__content" id="previewContentState" style="display: none;">
+                <h2 class="task-preview-drawer__title" id="previewTitle"></h2>
+
+                <!-- Publisher Info -->
+                <div class="task-preview-drawer__publisher" id="previewPublisher">
+                    <img class="task-preview-drawer__publisher-avatar" id="previewPublisherAvatar" src="" alt="">
+                    <div class="task-preview-drawer__publisher-info">
+                        <div class="task-preview-drawer__publisher-name-row">
+                            <span class="task-preview-drawer__publisher-name" id="previewPublisherName"></span>
+                            <span class="task-preview-drawer__publisher-verified" id="previewPublisherVerified" style="display: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="task-preview-drawer__publisher-rating" id="previewPublisherRating" style="display: none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span id="previewPublisherRatingValue"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="task-preview-drawer__description" id="previewDescription" style="display: none;">
+                    <h4 class="task-preview-drawer__section-title">需求描述</h4>
+                    <p class="task-preview-drawer__description-text" id="previewDescriptionText"></p>
+                </div>
+
+                <!-- Summary Fallback -->
+                <p class="task-preview-drawer__summary" id="previewSummary"></p>
+
+                <!-- Key Info -->
+                <div class="task-preview-drawer__info">
+                    <div class="task-preview-drawer__info-item">
+                        <svg class="task-preview-drawer__info-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="task-preview-drawer__info-label">预算</span>
+                        <span class="task-preview-drawer__info-value" id="previewBudget"></span>
+                    </div>
+                    <div class="task-preview-drawer__info-item">
+                        <svg class="task-preview-drawer__info-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="task-preview-drawer__info-label">工期</span>
+                        <span class="task-preview-drawer__info-value" id="previewDuration"></span>
+                    </div>
+                    <div class="task-preview-drawer__info-item">
+                        <svg class="task-preview-drawer__info-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="task-preview-drawer__info-label">截止</span>
+                        <span class="task-preview-drawer__info-value" id="previewDeadline"></span>
+                    </div>
+                </div>
+
+                <!-- Tech Stacks -->
+                <div class="task-preview-drawer__stacks" id="previewStacks" style="display: none;">
+                    <h4 class="task-preview-drawer__section-title">技术栈</h4>
+                    <div class="task-preview-drawer__stacks-list" id="previewStacksList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="task-preview-drawer__footer">
+            <a href="" class="btn btn-primary btn-full task-preview-drawer__detail-btn" id="previewDetailBtn">
+                查看详情
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </a>
+        </div>
+    </aside>
+
+    <!-- JavaScript -->
+    <!-- 非模块脚本：确保在 file:// 协议下也能正常显示导航栏 -->
+    <script>
+        // 初始化认证状态检查
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof AuthCheck !== 'undefined') {
+                AuthCheck.init();
+            }
+        });
+    </script>
+    <!-- 任务大厅脚本：按依赖顺序加载 -->
+    <script src="assets/js/task-config.js"></script>
+    <script src="assets/js/task-runtime-repository.js"></script>
+    <script src="assets/js/task-service.js"></script>
+    <script src="assets/js/task-view-model.js"></script>
+    <script src="assets/js/task-preview-drawer.js"></script>
+    <script type="module" src="assets/js/task-hall-main.js"></script>
+    <script src="assets/js/task-hall.js"></script>
+</body>
+</html>

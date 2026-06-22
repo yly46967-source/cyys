@@ -1,0 +1,240 @@
+<!--
+    [FILE] task-detail.html
+    [POS] 任务详情页 - 展示任务完整信息、发布方信息
+    [IN] URL 参数 (id)
+    [OUT] 渲染后的 DOM 结构
+    [DEP] assets/css/* (样式), assets/js/task-*.js (交互)
+    [SIDE EFFECT] 通过 CSS/JS 文件引用触发样式渲染和交互初始化
+    [TEST] 手动测试: 在浏览器中打开并验证所有功能
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="查看任务详细需求、发布方信息和技术要求">
+    <title>任务详情 - TechCraft</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/task-detail.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div data-layout="navbar"></div>
+
+    <!-- Page Header (Breadcrumb) -->
+    <header class="task-detail-header">
+        <div class="container">
+            <nav class="breadcrumb" aria-label="面包屑导航">
+                <a href="task-hall.html" class="breadcrumb-item">
+                    任务大厅
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <span class="breadcrumb-item breadcrumb-item--current">任务详情</span>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="task-detail-main">
+        <div class="container">
+            <!-- Loading State -->
+            <div id="detailLoadingState" class="task-detail-state task-detail-state--loading">
+                <div class="task-detail-skeleton">
+                    <div class="task-detail-skeleton__header"></div>
+                    <div class="task-detail-skeleton__content"></div>
+                    <div class="task-detail-skeleton__sidebar"></div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="detailEmptyState" class="task-detail-state task-detail-state--empty" style="display: none;">
+                <svg class="task-detail-state-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                <h2 class="task-detail-state-title">任务不存在</h2>
+                <p class="task-detail-state-description">抱歉，未找到该任务信息。</p>
+                <a href="task-hall.html" class="btn btn-primary">返回任务大厅</a>
+            </div>
+
+            <!-- Error State -->
+            <div id="detailErrorState" class="task-detail-state task-detail-state--error" style="display: none;">
+                <svg class="task-detail-state-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+                <h2 class="task-detail-state-title">加载失败</h2>
+                <p class="task-detail-state-description">任务信息加载失败，请稍后重试。</p>
+                <button type="button" class="btn btn-secondary" id="retryLoadBtn">重新加载</button>
+                <a href="task-hall.html" class="btn btn-ghost">返回任务大厅</a>
+            </div>
+
+            <!-- Content State -->
+            <div id="detailContentState" class="task-detail-content" style="display: none;">
+                <div class="task-detail-layout">
+                    <!-- Left: Task Information -->
+                    <div class="task-detail-main-info">
+                        <!-- Title and Status -->
+                        <div class="task-detail-title-section">
+                            <h1 class="task-detail-title" id="detailTitle"></h1>
+                            <div class="task-detail-meta">
+                                <span class="task-detail-status" id="detailStatus"></span>
+                                <span class="task-detail-category" id="detailCategory"></span>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <section class="task-detail-section" id="detailDescriptionSection">
+                            <h2 class="task-detail-section-title">需求描述</h2>
+                            <div class="task-detail-description" id="detailDescription"></div>
+                        </section>
+
+                        <!-- Requirements -->
+                        <section class="task-detail-section" id="detailRequirementsSection">
+                            <h2 class="task-detail-section-title">具体要求</h2>
+                            <ul class="task-detail-list" id="detailRequirements"></ul>
+                        </section>
+
+                        <!-- Deliverables -->
+                        <section class="task-detail-section" id="detailDeliverablesSection">
+                            <h2 class="task-detail-section-title">交付物清单</h2>
+                            <ul class="task-detail-list" id="detailDeliverables"></ul>
+                        </section>
+
+                        <!-- Tech Stacks -->
+                        <section class="task-detail-section" id="detailStacksSection">
+                            <h2 class="task-detail-section-title">技术栈</h2>
+                            <div class="task-detail-stacks" id="detailStacks"></div>
+                        </section>
+
+                        <!-- Key Info -->
+                        <section class="task-detail-section task-detail-section--info">
+                            <h2 class="task-detail-section-title">项目信息</h2>
+                            <div class="task-detail-info-grid">
+                                <div class="task-detail-info-item">
+                                    <span class="task-detail-info-label">预算范围</span>
+                                    <span class="task-detail-info-value" id="detailBudget"></span>
+                                </div>
+                                <div class="task-detail-info-item">
+                                    <span class="task-detail-info-label">交付模式</span>
+                                    <span class="task-detail-info-value" id="detailDeliveryMode"></span>
+                                </div>
+                                <div class="task-detail-info-item">
+                                    <span class="task-detail-info-label">预计工期</span>
+                                    <span class="task-detail-info-value" id="detailDuration"></span>
+                                </div>
+                                <div class="task-detail-info-item">
+                                    <span class="task-detail-info-label">截止日期</span>
+                                    <span class="task-detail-info-value" id="detailDeadline"></span>
+                                </div>
+                                <div class="task-detail-info-item">
+                                    <span class="task-detail-info-label">发布时间</span>
+                                    <span class="task-detail-info-value" id="detailPublishedAt"></span>
+                                </div>
+                                <div class="task-detail-info-item">
+                                    <span class="task-detail-info-label">最后更新</span>
+                                    <span class="task-detail-info-value" id="detailUpdatedAt"></span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Right: Publisher and Actions -->
+                    <aside class="task-detail-sidebar">
+                        <!-- Publisher Card -->
+                        <div class="publisher-card">
+                            <div class="publisher-card__header">
+                                <img class="publisher-card__avatar" id="detailPublisherAvatar" src="" alt="">
+                                <div class="publisher-card__info">
+                                    <div class="publisher-card__name-row">
+                                        <h3 class="publisher-card__name" id="detailPublisherName"></h3>
+                                        <span class="publisher-card__verified" id="detailPublisherVerified" style="display: none;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                                <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.491 4.491 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.491 4.491 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="publisher-card__rating" id="detailPublisherRating" style="display: none;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span id="detailPublisherRatingValue"></span>
+                                        <span class="publisher-card__review-count" id="detailPublisherReviewCount"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="publisher-card__stats" id="detailPublisherStats" style="display: none;">
+                                <div class="publisher-card__stat">
+                                    <span class="publisher-card__stat-value" id="detailPublisherPublishedCount"></span>
+                                    <span class="publisher-card__stat-label">已发布</span>
+                                </div>
+                                <div class="publisher-card__stat">
+                                    <span class="publisher-card__stat-value" id="detailPublisherCompletionRate"></span>
+                                    <span class="publisher-card__stat-label">完成率</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Card -->
+                        <div class="action-card">
+                            <!-- Accept Task Button (Developer Only) -->
+                            <a
+                                href=""
+                                class="btn btn-primary btn-full action-card__btn"
+                                id="acceptTaskBtn"
+                                data-show-role="developer"
+                                style="display: none; margin-bottom: 12px;"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                接受任务
+                            </a>
+
+                            <button type="button" class="btn btn-primary btn-full action-card__btn" id="backToHallBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                返回任务大厅
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div data-layout="footer"></div>
+
+    <!-- Back to Top -->
+    <div data-layout="back-to-top"></div>
+
+    <!-- JavaScript -->
+    <!-- 非模块脚本：确保在 file:// 协议下也能正常显示导航栏 -->
+    <script>
+        // 初始化认证状态检查
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof AuthCheck !== 'undefined') {
+                AuthCheck.init();
+            }
+        });
+    </script>
+    <!-- 交互脚本 -->
+    <script src="assets/js/task-config.js"></script>
+    <script src="assets/js/task-runtime-repository.js"></script>
+    <script src="assets/js/task-service.js"></script>
+    <script src="assets/js/task-view-model.js"></script>
+    <script src="assets/js/task-detail.js"></script>
+    <!-- 统一入口 -->
+    <script type="module" src="assets/js/task-detail-main.js"></script>
+</body>
+</html>

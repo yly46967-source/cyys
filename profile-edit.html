@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑资料 - TechCraft</title>
+
+    <!-- CSS 样式 -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/profile.css?v=20260513-layout">
+
+    <!-- 认证相关配置和数据 -->
+    <script src="mock-data/auth-mock.js"></script>
+    <script src="assets/js/auth-config.js"></script>
+</head>
+<body>
+    <!-- 导航栏（共享布局） -->
+    <nav class="navbar" data-layout="navbar"></nav>
+
+    <!-- 主内容区 -->
+    <main class="profile-edit-main">
+        <div class="container">
+            <div class="profile-edit-container">
+                <!-- 页面头部 -->
+                <div class="profile-edit-header">
+                    <button class="btn btn-back" id="backBtn">
+                        <span class="icon">←</span>
+                        <span>返回</span>
+                    </button>
+                    <h1 class="page-title">编辑资料</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="saveBtn">保存</button>
+                        <button class="btn btn-secondary" id="cancelBtn">取消</button>
+                    </div>
+                </div>
+
+                <!-- 编辑表单 -->
+                <form id="profileEditForm" class="profile-edit-form">
+                    <!-- 头像上传区域 -->
+                    <div class="form-section">
+                        <h2 class="section-title">头像</h2>
+                        <div class="avatar-upload-area">
+                            <div class="avatar-preview">
+                                <img id="avatarPreview" src="" alt="头像预览" class="avatar-image">
+                                <div class="avatar-placeholder" id="avatarPlaceholder">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="avatar-controls">
+                                <input type="file" id="avatarInput" accept="image/*" class="avatar-input">
+                                <button type="button" class="btn btn-secondary" id="uploadAvatarBtn">
+                                    上传头像
+                                </button>
+                                <p class="avatar-hint">支持 JPG、PNG、WebP 格式，最大 2MB</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 基本信息 -->
+                    <div class="form-section">
+                        <h2 class="section-title">基本信息</h2>
+
+                        <div class="form-group">
+                            <label for="name" class="form-label">姓名 <span class="required">*</span></label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                class="form-input"
+                                required
+                                maxlength="20"
+                                placeholder="请输入您的姓名">
+                            <span class="form-hint">最多 20 个字符</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bio" class="form-label">简介</label>
+                            <textarea
+                                id="bio"
+                                name="bio"
+                                class="form-textarea"
+                                maxlength="200"
+                                rows="4"
+                                placeholder="介绍一下您自己..."></textarea>
+                            <span class="form-hint">最多 200 个字符</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location" class="form-label">地区</label>
+                            <input
+                                type="text"
+                                id="location"
+                                name="location"
+                                class="form-input"
+                                maxlength="50"
+                                placeholder="例如：北京市朝阳区">
+                            <span class="form-hint">最多 50 个字符</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="website" class="form-label">个人网站</label>
+                            <input
+                                type="url"
+                                id="website"
+                                name="website"
+                                class="form-input"
+                                placeholder="https://example.com">
+                            <span class="form-hint">请输入完整的 URL（包含 https:// 或 http://）</span>
+                        </div>
+                    </div>
+
+                    <!-- 角色专属信息（动态加载） -->
+                    <div class="form-section" id="roleSpecificSection">
+                        <h2 class="section-title" id="roleSectionTitle">专属信息</h2>
+                        <div id="roleSpecificFields">
+                            <!-- 客户字段或开发者字段将在这里动态渲染 -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚（共享布局） -->
+    <footer class="footer" data-layout="footer"></footer>
+
+    <!-- JavaScript 业务逻辑 -->
+    <script type="module" src="assets/js/profile-edit-main.js"></script>
+</body>
+</html>

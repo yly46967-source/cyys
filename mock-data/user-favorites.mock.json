@@ -1,0 +1,12 @@
+{
+  "userId": "user-001",
+  "userName": "当前用户",
+  "favorites": [
+    "task-001",
+    "task-004",
+    "task-007",
+    "task-010",
+    "task-014"
+  ],
+  "updatedAt": "2026-04-08T10:00:00+08:00"
+}

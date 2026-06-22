@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>接受任务 - TechCraft</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/task-form.css">
+</head>
+<body>
+    <div data-layout="navbar"></div>
+
+    <main class="task-form-page">
+        <div class="container">
+            <header class="task-form-hero">
+                <span class="task-form-hero__eyebrow">开发者入口</span>
+                <h1 class="task-form-hero__title">提交接单申请</h1>
+                <p class="task-form-hero__desc">先确认任务摘要，再填写报价、预计工期和接单说明。提交后状态会进入待客户处理。</p>
+            </header>
+
+            <div id="acceptTaskLoading" class="task-form-state">
+                <h2>正在加载任务</h2>
+                <p>正在校验任务状态和当前申请记录，请稍候。</p>
+            </div>
+
+            <div id="acceptTaskError" class="task-form-state task-form-hidden">
+                <h2>无法继续提交</h2>
+                <p id="acceptTaskErrorText"></p>
+                <a href="task-hall.html" class="btn btn-secondary">返回任务大厅</a>
+            </div>
+
+            <div id="acceptTaskBlocked" class="task-form-state task-form-hidden">
+                <h2 id="acceptTaskBlockedTitle"></h2>
+                <p id="acceptTaskBlockedText"></p>
+                <a href="task-hall.html" class="btn btn-secondary">返回任务大厅</a>
+            </div>
+
+            <div id="acceptTaskContent" class="task-form-shell task-form-hidden">
+                <section id="acceptTaskSummary"></section>
+
+                <aside class="task-form-sidebar">
+                    <h2 class="task-form-sidebar__title">提交前确认</h2>
+                    <div class="task-form-sidebar__list">
+                        <div>1. 报价和工期要与任务预算、周期匹配。</div>
+                        <div>2. 说明里写清你的方案、经验和风险判断。</div>
+                        <div>3. 提交成功后，本期不允许重复申请。</div>
+                    </div>
+                    <div class="task-form-sidebar__note">当前页面的业务语义是提交接单申请，不会直接把任务改成进行中。</div>
+
+                    <div class="task-summary-card" style="margin-top: 16px;">
+                        <form id="acceptTaskForm" novalidate>
+                            <div class="form-group">
+                                <label for="acceptTaskQuotedPrice" class="form-label">我的报价</label>
+                                <input id="acceptTaskQuotedPrice" name="quotedPrice" class="form-input" type="number" min="1" placeholder="例如 9800">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="acceptTaskEstimatedDuration" class="form-label">预计工期（天）</label>
+                                <input id="acceptTaskEstimatedDuration" name="estimatedDuration" class="form-input" type="number" min="1" placeholder="例如 12">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="acceptTaskProposal" class="form-label">接单说明</label>
+                                <textarea id="acceptTaskProposal" name="proposal" class="form-textarea" rows="8" placeholder="说明你对需求的理解、拟采用的方案、关键经验、交付方式和风险控制点"></textarea>
+                            </div>
+
+                            <div class="task-form-actions" style="margin-top: 20px;">
+                                <a href="task-hall.html" class="btn btn-secondary">取消</a>
+                                <button id="acceptTaskSubmitBtn" type="submit" class="btn btn-primary">确认提交申请</button>
+                            </div>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <div data-layout="footer"></div>
+    <div data-layout="back-to-top"></div>
+
+    <script src="assets/js/task-config.js"></script>
+    <script src="assets/js/task-runtime-repository.js"></script>
+    <script type="module" src="assets/js/accept-task-main.js"></script>
+</body>
+</html>

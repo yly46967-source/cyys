@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>制定任务 - TechCraft</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/task-form.css">
+</head>
+<body>
+    <div data-layout="navbar"></div>
+
+    <main class="task-form-page">
+        <div class="container">
+            <header class="task-form-hero">
+                <span class="task-form-hero__eyebrow">客户入口</span>
+                <h1 class="task-form-hero__title">制定任务并预览后发布</h1>
+                <p class="task-form-hero__desc">先补齐业务背景、预算、周期和交付物，再进入预览确认；确认发布后任务会进入招募中状态。</p>
+            </header>
+
+            <div class="task-form-shell">
+                <section class="task-form-panel">
+                    <div class="task-form-steps">
+                        <div class="task-form-step is-active">
+                            <span class="task-form-step__index">1</span>
+                            <div class="task-form-step__title">填写任务</div>
+                            <div class="task-form-step__desc">整理范围、预算和交付要求</div>
+                        </div>
+                        <div class="task-form-step">
+                            <span class="task-form-step__index">2</span>
+                            <div class="task-form-step__title">预览确认</div>
+                            <div class="task-form-step__desc">确认无误后正式发布</div>
+                        </div>
+                    </div>
+
+                    <div id="createTaskEditor">
+                        <form id="createTaskForm" novalidate>
+                            <section class="task-form-section">
+                                <h2 class="task-form-section__title">基础信息</h2>
+                                <p class="task-form-section__desc">这部分决定任务在大厅中的第一屏展示效果。</p>
+
+                                <div class="task-form-grid">
+                                    <div class="form-group is-full">
+                                        <label for="createTaskTitle" class="form-label">任务标题</label>
+                                        <input id="createTaskTitle" name="title" class="form-input" type="text" placeholder="例如：企业官网改版与线索收集表单开发">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="createTaskCategory" class="form-label">任务类型</label>
+                                        <select id="createTaskCategory" name="category" class="form-select"></select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="createTaskDeliveryMode" class="form-label">交付模式</label>
+                                        <select id="createTaskDeliveryMode" name="deliveryMode" class="form-select"></select>
+                                    </div>
+
+                                    <div class="form-group is-full">
+                                        <label for="createTaskSummary" class="form-label">任务摘要</label>
+                                        <textarea id="createTaskSummary" name="summary" class="form-textarea" rows="3" placeholder="简要说明项目背景、核心目标和交付重点"></textarea>
+                                    </div>
+
+                                    <div class="form-group is-full">
+                                        <label for="createTaskDescription" class="form-label">详细描述</label>
+                                        <textarea id="createTaskDescription" name="description" class="form-textarea" rows="6" placeholder="补充业务上下文、关键页面、已有系统、协作方式和特别约束"></textarea>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="task-form-section">
+                                <h2 class="task-form-section__title">预算与周期</h2>
+                                <p class="task-form-section__desc">预算、工期和截止日期会直接影响开发者是否愿意提交申请。</p>
+
+                                <div class="task-form-grid">
+                                    <div class="form-group">
+                                        <label for="createTaskBudgetMin" class="form-label">最低预算</label>
+                                        <input id="createTaskBudgetMin" name="budgetMin" class="form-input" type="number" min="1" placeholder="5000">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="createTaskBudgetMax" class="form-label">最高预算</label>
+                                        <input id="createTaskBudgetMax" name="budgetMax" class="form-input" type="number" min="1" placeholder="12000">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="createTaskDurationDays" class="form-label">预计工期（天）</label>
+                                        <input id="createTaskDurationDays" name="durationDays" class="form-input" type="number" min="1" placeholder="14">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="createTaskDeadline" class="form-label">报名截止日期</label>
+                                        <input id="createTaskDeadline" name="deadline" class="form-input" type="date">
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="task-form-section">
+                                <h2 class="task-form-section__title">技术与范围</h2>
+                                <p class="task-form-section__desc">用明确的技术栈、需求清单和交付物降低沟通成本。</p>
+
+                                <div class="form-group">
+                                    <label class="form-label">技术栈</label>
+                                    <div id="createTaskStacks" class="task-form-check-grid"></div>
+                                    <div id="createTaskStacksError" class="task-form-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">需求清单</label>
+                                    <div id="requirementsList" class="task-form-list"></div>
+                                    <button id="addRequirementBtn" type="button" class="btn btn-secondary">添加一项需求</button>
+                                    <div id="requirementsError" class="task-form-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">交付物清单</label>
+                                    <div id="deliverablesList" class="task-form-list"></div>
+                                    <button id="addDeliverableBtn" type="button" class="btn btn-secondary">添加一项交付物</button>
+                                    <div id="deliverablesError" class="task-form-error"></div>
+                                </div>
+                            </section>
+                        </form>
+
+                        <div class="task-form-actions">
+                            <button id="createTaskCancelBtn" type="button" class="btn btn-secondary">取消</button>
+                            <button id="createTaskPreviewBtn" type="button" class="btn btn-primary">预览任务</button>
+                        </div>
+                    </div>
+
+                    <div id="createTaskPreview" class="task-form-hidden">
+                        <div class="task-form-banner">发布后将立即进入任务大厅，并在客户个人中心同步可见。</div>
+
+                        <article class="task-form-preview-card">
+                            <div class="task-preview-header">
+                                <div>
+                                    <h2 id="previewTaskTitle" class="task-preview-title"></h2>
+                                    <div id="previewTaskMeta" class="task-preview-meta"></div>
+                                </div>
+                            </div>
+
+                            <div class="task-preview-block">
+                                <h3 class="task-preview-block__title">任务摘要</h3>
+                                <p id="previewTaskSummary" class="task-preview-text"></p>
+                            </div>
+
+                            <div class="task-preview-block">
+                                <h3 class="task-preview-block__title">详细描述</h3>
+                                <p id="previewTaskDescription" class="task-preview-text"></p>
+                            </div>
+                        </article>
+
+                        <article class="task-form-preview-card">
+                            <div class="task-preview-info">
+                                <div class="task-preview-info__item">
+                                    <span class="task-preview-info__label">预算</span>
+                                    <strong id="previewTaskBudget" class="task-preview-info__value"></strong>
+                                </div>
+                                <div class="task-preview-info__item">
+                                    <span class="task-preview-info__label">工期</span>
+                                    <strong id="previewTaskDuration" class="task-preview-info__value"></strong>
+                                </div>
+                                <div class="task-preview-info__item">
+                                    <span class="task-preview-info__label">截止日期</span>
+                                    <strong id="previewTaskDeadline" class="task-preview-info__value"></strong>
+                                </div>
+                                <div class="task-preview-info__item">
+                                    <span class="task-preview-info__label">交付模式</span>
+                                    <strong id="previewTaskDeliveryMode" class="task-preview-info__value"></strong>
+                                </div>
+                            </div>
+
+                            <div class="task-preview-block">
+                                <h3 class="task-preview-block__title">技术栈</h3>
+                                <div id="previewTaskStacks" class="task-preview-tags"></div>
+                            </div>
+
+                            <div class="task-preview-block">
+                                <h3 class="task-preview-block__title">需求清单</h3>
+                                <ul id="previewTaskRequirements" class="task-preview-list"></ul>
+                            </div>
+
+                            <div class="task-preview-block">
+                                <h3 class="task-preview-block__title">交付物清单</h3>
+                                <ul id="previewTaskDeliverables" class="task-preview-list"></ul>
+                            </div>
+                        </article>
+
+                        <div class="task-form-actions">
+                            <button id="createTaskEditBtn" type="button" class="btn btn-secondary">返回编辑</button>
+                            <button id="createTaskPublishBtn" type="button" class="btn btn-primary">确认发布</button>
+                        </div>
+                    </div>
+                </section>
+
+                <aside class="task-form-sidebar">
+                    <h2 class="task-form-sidebar__title">发布前检查</h2>
+                    <div class="task-form-sidebar__list">
+                        <div>1. 标题和摘要要能快速说明业务目标。</div>
+                        <div>2. 预算区间尽量真实，避免无效申请。</div>
+                        <div>3. 需求清单和交付物至少各写一项。</div>
+                        <div>4. 截止日期必须晚于今天。</div>
+                    </div>
+                    <div class="task-form-sidebar__note">本期为前端原型闭环：发布结果会写入运行时仓储，并同步到大厅、详情和客户个人中心。</div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <div data-layout="footer"></div>
+    <div data-layout="back-to-top"></div>
+
+    <script src="assets/js/task-config.js"></script>
+    <script src="assets/js/task-runtime-repository.js"></script>
+    <script type="module" src="assets/js/create-task-main.js"></script>
+</body>
+</html>

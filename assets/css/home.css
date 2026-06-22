@@ -1,0 +1,466 @@
+/*
+    [FILE] home.css
+    [POS] 首页专用样式 - Hero、作品展示、服务标签、统计数据、CTA、联系表单
+    [IN] base.css, components.css
+    [OUT] 首页样式规则
+    [DEP] base.css, components.css
+    [SIDE EFFECT] 无
+    [TEST] 手动测试: 验证首页各区块样式
+
+    Dribbble Style - Home Page
+    ============================================ */
+
+/* ============================================
+   Hero Section
+   ============================================ */
+
+.hero {
+    position: relative;
+    padding: calc(64px + var(--spacing-3xl)) 0 var(--spacing-3xl);
+    text-align: center;
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.03;
+}
+
+.hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+    letter-spacing: -0.02em;
+    position: relative;
+}
+
+.hero-subtitle {
+    font-size: 18px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-2xl);
+    position: relative;
+}
+
+/* ============================================
+   Tabs
+   ============================================ */
+
+.tabs {
+    display: inline-flex;
+    background: var(--color-bg-secondary);
+    padding: 4px;
+    border-radius: var(--radius-full);
+    gap: 4px;
+}
+
+.tab {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: transparent;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.tab:hover {
+    color: var(--color-text-primary);
+}
+
+.tab.active {
+    color: var(--color-bg);
+    background: var(--color-text-primary);
+}
+
+/* ============================================
+   Works Section (Masonry)
+   ============================================ */
+
+.works {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-bg-secondary);
+}
+
+.works-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-xl);
+}
+
+/* Masonry layout using CSS Grid */
+.works-grid.masonry {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 10px;
+}
+
+.work-card {
+    display: block;
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    cursor: pointer;
+    margin-bottom: var(--spacing-xl);
+}
+
+.work-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.work-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.work-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.work-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.work-card:hover .work-overlay {
+    opacity: 1;
+}
+
+.btn-view {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-bg);
+    background: var(--color-primary);
+    border-radius: var(--radius-sm);
+}
+
+.work-info {
+    padding: var(--spacing-lg);
+}
+
+.work-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.work-meta {
+    margin-bottom: var(--spacing-sm);
+}
+
+.work-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-tertiary);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+}
+
+.work-author {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.work-author img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.author-name {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.works-footer {
+    text-align: center;
+    margin-top: var(--spacing-2xl);
+}
+
+/* ============================================
+   Services Tags
+   ============================================ */
+
+.services-tags {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-bg);
+    text-align: center;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   Stats Section
+   ============================================ */
+
+.stats {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-xl);
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+/* ============================================
+   CTA Section
+   ============================================ */
+
+.cta {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-primary);
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color-bg);
+    margin-bottom: var(--spacing-sm);
+}
+
+.cta-subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: var(--spacing-xl);
+}
+
+.cta-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+}
+
+/* ============================================
+   Contact Section
+    ============================================ */
+
+.contact {
+    padding: var(--spacing-3xl) 0;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-3xl);
+}
+
+.contact-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.contact-description {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xl);
+}
+
+.contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+}
+
+.contact-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.contact-label {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    margin-bottom: 2px;
+}
+
+.contact-value {
+    display: block;
+    font-size: 14px;
+    color: var(--color-text-primary);
+}
+
+.contact-form {
+    background: var(--color-bg-secondary);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-md);
+}
+
+.contact-form .form-group input,
+.contact-form .form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    color: var(--color-text-primary);
+    transition: border-color var(--transition-fast);
+}
+
+.contact-form .form-group input:focus,
+.contact-form .form-group textarea:focus {
+    border-color: var(--color-text-secondary);
+}
+
+.contact-form .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* ============================================
+   Form Messages
+   ============================================ */
+
+.form-message {
+    padding: 12px 16px;
+    margin-top: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    text-align: center;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.form-message-success {
+    background: var(--color-success-bg);
+    color: #166534;
+    border: 1px solid var(--color-success-border);
+}
+
+.form-message-error {
+    background: var(--color-error-bg);
+    color: #991B1B;
+    border: 1px solid var(--color-error-border);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   Responsive Home
+    ============================================ */
+
+@media (max-width: 1200px) {
+    .works-grid.masonry {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .works-grid.masonry {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+    }
+
+    .cta-actions {
+        flex-direction: column;
+    }
+
+    .cta-actions .btn-white,
+    .cta-actions .btn-outline {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .works-grid.masonry {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

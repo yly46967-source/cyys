@@ -1,0 +1,233 @@
+<!--
+    [FILE] register.html
+    [POS] 注册页面 - 4步向导式注册（手机验证→设置密码→角色选择→基本信息）
+    [IN] 用户输入 (手机号、验证码、密码、角色、姓名)
+    [OUT] 注册表单 DOM 结构
+    [DEP] assets/css/auth.css, assets/js/register.js, mock-data/auth-mock.js
+    [SIDE EFFECT] 表单提交触发注册逻辑
+    [TEST] 手动测试: 验证4步注册流程、表单验证、错误提示
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TechCraft 注册页面">
+    <title>注册 - TechCraft</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div data-layout="navbar"></div>
+
+    <!-- Main Content -->
+    <main class="auth-container">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <h1 class="auth-title">创建账号</h1>
+                <p class="auth-subtitle">加入 TechCraft，开始您的项目之旅</p>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="register-progress">
+                <div class="progress-step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">验证手机</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">设置密码</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">选择角色</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">基本信息</span>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <form class="auth-body" id="registerForm">
+                <!-- Step 1: Phone Verification -->
+                <div class="step-content active" data-step="1">
+                    <div class="auth-form-group">
+                        <div class="auth-form-group--phone">
+                            <div class="auth-phone-code">+86</div>
+                            <input
+                                type="tel"
+                                name="phone"
+                                class="auth-form-input"
+                                placeholder="请输入手机号"
+                                maxlength="11"
+                                required
+                            >
+                        </div>
+                        <span class="auth-form-error" id="phoneError"></span>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <div class="auth-code-wrapper">
+                            <input
+                                type="text"
+                                name="code"
+                                class="auth-form-input auth-code-input"
+                                placeholder="请输入验证码"
+                                maxlength="6"
+                                required
+                            >
+                            <button
+                                type="button"
+                                class="btn btn-secondary auth-code-button"
+                                id="sendCodeBtn"
+                            >
+                                发送验证码
+                            </button>
+                        </div>
+                        <span class="auth-form-error" id="codeError"></span>
+                    </div>
+                </div>
+
+                <!-- Step 2: Set Password -->
+                <div class="step-content" data-step="2">
+                    <div class="auth-form-group">
+                        <input
+                            type="password"
+                            name="password"
+                            class="auth-form-input"
+                            placeholder="设置密码（8位以上，包含大小写字母和数字）"
+                            required
+                        >
+                        <span class="auth-form-error" id="passwordError"></span>
+                    </div>
+
+                    <div class="auth-password-strength" id="passwordStrength" style="display: none;">
+                        <div class="auth-password-strength-bar">
+                            <div class="auth-password-strength-fill" id="strengthFill"></div>
+                        </div>
+                        <div class="auth-password-strength-text">
+                            <span id="strengthLabel">请输入密码</span>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <div class="auth-form-password-wrapper">
+                            <input
+                                type="password"
+                                name="confirmPassword"
+                                class="auth-form-input"
+                                placeholder="确认密码"
+                                required
+                            >
+                            <button type="button" class="auth-form-password-toggle" data-target="confirmPassword">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="auth-form-error" id="confirmPasswordError"></span>
+                    </div>
+                </div>
+
+                <!-- Step 3: Select Role -->
+                <div class="step-content" data-step="3">
+                    <div class="role-selection">
+                        <div class="role-card" data-role="client" tabindex="0">
+                            <div class="role-card-icon">👤</div>
+                            <div class="role-card-title">客户</div>
+                            <div class="role-card-description">
+                                发布悬赏需求<br>
+                                托管项目资金<br>
+                                验收交付成果
+                            </div>
+                        </div>
+                        <div class="role-card" data-role="developer" tabindex="0">
+                            <div class="role-card-icon">👨‍💻</div>
+                            <div class="role-card-title">开发者</div>
+                            <div class="role-card-description">
+                                承接项目任务<br>
+                                展示专业技能<br>
+                                提交作品交付
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="role" id="roleInput" required>
+                    <span class="auth-form-error" id="roleError"></span>
+                </div>
+
+                <!-- Step 4: Basic Information -->
+                <div class="step-content" data-step="4">
+                    <div class="auth-form-group">
+                        <input
+                            type="text"
+                            name="name"
+                            class="auth-form-input"
+                            placeholder="您的姓名"
+                            required
+                        >
+                        <span class="auth-form-error" id="nameError"></span>
+                    </div>
+
+                    <label class="auth-checkbox">
+                        <input type="checkbox" name="agreed" id="agreedCheckbox" required>
+                        <span class="auth-checkbox-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </span>
+                        <span class="auth-checkbox-label">
+                            我已阅读并同意
+                            <a href="#" class="auth-checkbox-link">《用户协议》</a>
+                            和
+                            <a href="#" class="auth-checkbox-link">《隐私政策》</a>
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Actions -->
+                <div class="auth-actions auth-actions--row">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
+                        上一步
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextBtn">
+                        下一步
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">
+                        确认注册
+                    </button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p class="auth-footer-text">
+                    已有账号？
+                    <a href="login.html" class="auth-footer-link">立即登录</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div data-layout="footer"></div>
+
+    <!-- JavaScript -->
+    <script src="mock-data/auth-mock.js"></script>
+    <script type="module" src="assets/js/register-main.js"></script>
+</body>
+</html>

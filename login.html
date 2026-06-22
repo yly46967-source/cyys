@@ -1,0 +1,127 @@
+<!--
+    [FILE] login.html
+    [POS] 登录页面 - 手机号+验证码登录
+    [IN] 用户输入 (手机号、验证码、记住我)
+    [OUT] 登录表单 DOM 结构
+    [DEP] assets/css/auth.css
+    [SIDE EFFECT] 表单提交触发登录逻辑
+    [TEST] 手动测试: 验证登录流程、表单验证、错误提示
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TechCraft 登录页面">
+    <title>登录 - TechCraft</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">TechCraft</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="auth-container">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <h1 class="auth-title">欢迎回来</h1>
+                <p class="auth-subtitle">使用手机号登录 TechCraft</p>
+            </div>
+
+            <!-- Login Form -->
+            <form class="auth-body" id="loginForm">
+                <!-- Phone Input -->
+                <div class="auth-form-group">
+                    <div class="auth-form-group--phone">
+                        <div class="auth-phone-code">+86</div>
+                        <input
+                            type="tel"
+                            name="phone"
+                            class="auth-form-input"
+                            id="phoneInput"
+                            placeholder="请输入手机号"
+                            maxlength="11"
+                            required
+                        >
+                    </div>
+                    <span class="auth-form-error" id="phoneError"></span>
+                </div>
+
+                <!-- Verification Code Input -->
+                <div class="auth-form-group">
+                    <div class="auth-code-wrapper">
+                        <input
+                            type="text"
+                            name="code"
+                            class="auth-form-input auth-code-input"
+                            id="codeInput"
+                            placeholder="请输入验证码"
+                            maxlength="6"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="btn btn-secondary auth-code-button"
+                            id="sendCodeBtn"
+                        >
+                            发送验证码
+                        </button>
+                    </div>
+                    <span class="auth-form-error" id="codeError"></span>
+                </div>
+
+                <!-- Remember Me -->
+                <label class="auth-checkbox">
+                    <input type="checkbox" name="rememberMe" id="rememberMe">
+                    <span class="auth-checkbox-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </span>
+                    <span class="auth-checkbox-label">记住我</span>
+                </label>
+
+                <!-- Actions -->
+                <div class="auth-actions">
+                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                        登录
+                    </button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p class="auth-footer-text">
+                    还没有账号？
+                    <a href="register.html" class="auth-footer-link">立即注册</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p class="footer-text">&copy; 2024 TechCraft. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="mock-data/auth-mock.js"></script>
+    <script type="module" src="assets/js/login-main.js"></script>
+</body>
+</html>

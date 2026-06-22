@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消息详情 - TechCraft</title>
+
+    <!-- CSS 样式 -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/profile.css?v=20260513-layout">
+
+    <!-- 认证相关配置和数据 -->
+    <script src="mock-data/auth-mock.js"></script>
+    <script src="assets/js/auth-config.js"></script>
+</head>
+<body>
+    <!-- 导航栏（共享布局） -->
+    <nav class="navbar" data-layout="navbar"></nav>
+
+    <!-- 主内容区 -->
+    <main class="message-detail-main">
+        <div class="container">
+            <div class="message-detail-container" id="messageDetailContainer">
+                <!-- 内容将由 JavaScript 动态渲染 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚（共享布局） -->
+    <footer class="footer" data-layout="footer"></footer>
+
+    <!-- JavaScript 业务逻辑 -->
+    <script type="module" src="assets/js/message-detail-main.js"></script>
+</body>
+</html>

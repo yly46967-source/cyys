@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx skills:*)",
+      "Skill(agent-browser)",
+      "Skill(agent-browser:*)",
+      "Bash(agent-browser open:*)",
+      "Bash(agent-browser wait:*)",
+      "Bash(agent-browser screenshot:*)",
+      "Bash(agent-browser snapshot:*)",
+      "Bash(agent-browser close:*)",
+      "Bash(chmod +x .claude/hooks/*.sh)",
+      "Bash(printf \"# 用户登录和注册页面系统 - 完整设计方案\\\\n\\\\n## 项目概述\\\\n\\\\n基于现有的 TechCraft Dribbble 风格网站，设计并实现一套完整的用户认证页面系统。\\\\n\\\\n---\\\\n\\\\n## 一、设计分析与架构决策\\\\n\\\\n### 1.1 现有设计系统分析\\\\n\\\\n**CSS 变量系统**：\\\\n- 主色：--color-primary: #3B82F6（科技蓝）\\\\n- 背景色：--color-bg: #FFFFFF, --color-bg-secondary: #F9F9F9\\\\n- 文字色：--color-text-primary: #0D0C22, --color-text-secondary: #6E6D7A\\\\n- 圆角：--radius-sm: 8px, --radius-md: 12px, --radius-lg: 16px\\\\n- 阴影：--shadow-sm, --shadow-md, --shadow-lg\\\\n\\\\n**现有组件**：\\\\n- 表单：.form-group, .form-input, .form-checkbox, .form-error\\\\n- 按钮：.btn, .btn-primary, .btn-secondary, .btn-full\\\\n- 卡片：.card, .card-body\\\\n\\\\n**文件组织**：\\\\n- 新增 assets/css/auth.css - 认证页面专用样式\\\\n- 新增 assets/js/auth.js - 认证页面共享逻辑\\\\n- 新增 HTML：login.html, register.html, forgot-password.html, reset-password.html\\\\n\\\\n---\\\\n\\\\n## 二、关键特性\\\\n\\\\n### 2.1 登录页面\\\\n- 邮箱/手机号 + 密码输入\\\\n- 记住我复选框\\\\n- 忘记密码链接\\\\n- 密码显示切换\\\\n- 还没有账户？立即注册\\\\n\\\\n### 2.2 注册页面\\\\n- 姓名 + 邮箱 + 密码 + 确认密码\\\\n- 密码强度实时指示器\\\\n- 服务条款勾选\\\\n- 已有账户？立即登录\\\\n\\\\n### 2.3 忘记密码页面\\\\n- 邮箱输入\\\\n- 发送重置链接\\\\n- 返回登录\\\\n\\\\n### 2.4 重置密码页面\\\\n- 新密码 + 确认新密码\\\\n- 密码强度指示器\\\\n- 返回登录\\\\n\\\\n---\\\\n\\\\n## 三、实施步骤\\\\n\\\\n1. 创建 auth.css 和 auth.js\\\\n2. 创建四个 HTML 页面\\\\n3. 实现表单验证逻辑\\\\n4. 更新 shared-layout.js 导航链接\\\\n5. 测试所有功能\\\\n\\\\n---\\\\n\\\\n## 四、关键文件清单\\\\n\\\\n1. assets/css/auth.css - 认证页面样式\\\\n2. assets/js/auth.js - 认证页面逻辑\\\\n3. login.html - 登录页面\\\\n4. register.html - 注册页面\\\\n5. forgot-password.html - 忘记密码页面\\\\n6. reset-password.html - 重置密码页面\\\\n7. assets/js/shared-layout.js - 更新导航\\\\n\\\\n---\\\\n\\\\n*文档版本: v1.0*\\\\n*创建日期: 2026-04-07*\\\\n\")",
+      "Bash(grep -E \"\\\\.html$|\\\\.htm$\")",
+      "Bash(dir assets\\\\js\\\\index-main.js)",
+      "Bash(agent-browser --allow-file-access open \"file:///c:/Users/admin/Desktop/公会/login.html\")",
+      "Bash(agent-browser click:*)",
+      "Bash(agent-browser fill:*)",
+      "Bash(agent-browser set:*)",
+      "Bash(rm -f /c/Users/admin/Desktop/公会/*.png)",
+      "Bash(ls /c/Users/admin/Desktop/公会/*.png)",
+      "Bash(agent-browser eval:*)",
+      "Bash(ls -la *.png)",
+      "Bash(agent-browser --allow-file-access open \"file:///c:/Users/admin/Desktop/公会/index.html\")",
+      "Bash(start \"\" \"c:\\\\Users\\\\admin\\\\Desktop\\\\公会\\\\task-hall.html\")",
+      "Bash(start \"\" \"c:\\\\Users\\\\admin\\\\Desktop\\\\公会\\\\task-detail.html?id=task-001\")",
+      "Bash(start \"\" \"c:\\\\Users\\\\admin\\\\Desktop\\\\公会\\\\task-detail.html\")",
+      "Bash(python -m http.server 8080)",
+      "Bash(timeout 3 cmd /c \"echo HTTP Server started. Access at http://localhost:8080/task-hall.html\")",
+      "Bash(ls -la /c/Users/admin/Desktop/公会/*.html)",
+      "Bash(xargs grep:*)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\admin\\Desktop\\公会"
+    ]
+  },
+  "plansDirectory": "./plans"
+}

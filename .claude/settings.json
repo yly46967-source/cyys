@@ -1,0 +1,43 @@
+{
+  "$schema": "https://cdn.jsdelivr.net/gh/anthropics/claude-code/setting-schema.json",
+  "permissions": {
+    "allow": [
+      "Bash(npx skills:*)",
+      "Skill(agent-browser)",
+      "Skill(agent-browser:*)",
+      "Bash(agent-browser open:*)",
+      "Bash(agent-browser wait:*)",
+      "Bash(agent-browser screenshot:*)",
+      "Bash(agent-browser snapshot:*)",
+      "Bash(agent-browser close:*)",
+      "Bash(.claude/hooks/*.sh)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "name": "guard-protected-paths",
+        "command": ".claude/hooks/pretool-guard.sh",
+        "description": "阻断对受保护目录的写入操作",
+        "tools": ["Edit", "Write"],
+        "enabled": true
+      }
+    ],
+    "PostToolUse": [
+      {
+        "name": "doc-sync-check",
+        "command": ".claude/hooks/posttool-doc-sync.sh",
+        "description": "检查代码变更是否需要同步模块文档",
+        "tools": ["Edit", "Write"],
+        "enabled": true
+      },
+      {
+        "name": "fractal-doc-report",
+        "command": ".claude/hooks/posttool-fractal-report.sh",
+        "description": "生成分形文档回环检查报告",
+        "tools": ["Edit", "Write"],
+        "enabled": true
+      }
+    ]
+  }
+}
