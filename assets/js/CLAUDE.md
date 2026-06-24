@@ -15,7 +15,8 @@
 
 | 文件 | 职责 | 依赖 |
 |------|------|------|
-| `main.js` | 主交互逻辑文件 | DOM (HTML)、CSS 样式类 |
+| `main.js` / `index-main.js` | 首页主交互逻辑 | DOM (HTML)、CSS 样式类 |
+| `fx.js` | **高级动效层引擎**（classic IIFE，file:// 兼容，无依赖）：光标光晕/粒子/WebGL 着色器/磁吸/滚动揭示视差/页面过渡 | effects.css、base.css |
 
 ---
 

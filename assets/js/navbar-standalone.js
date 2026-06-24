@@ -194,6 +194,9 @@
                         });
 
                         if (navLinks) navLinks.classList.remove('active');
+                    } else {
+                        // 目标锚点不在当前页，跳转到首页对应位置
+                        window.location.href = 'index.html' + href;
                     }
                 }
             });

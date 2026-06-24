@@ -186,6 +186,9 @@ function initNavigation() {
 
                     // Close mobile menu
                     navLinks?.classList.remove('active');
+                } else {
+                    // 目标锚点不在当前页（例如在任务大厅点击 作品/服务/关于），跳转到首页对应位置
+                    window.location.href = 'index.html' + href;
                 }
             }
         });

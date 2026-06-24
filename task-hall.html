@@ -25,13 +25,14 @@
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/task-hall.css">
     <link rel="stylesheet" href="assets/css/task-detail.css">
+    <link rel="stylesheet" href="assets/css/effects.css">
 </head>
 <body>
     <!-- Navigation -->
     <div data-layout="navbar"></div>
 
     <!-- Page Header -->
-    <header class="page-header">
+    <header class="page-header" data-fx-shader>
         <div class="container">
             <h1 class="page-title">任务大厅</h1>
             <p class="page-subtitle">浏览所有可用任务，找到适合您的项目</p>
@@ -39,7 +40,7 @@
     </header>
 
     <!-- Filter Bar -->
-    <section class="filter-bar">
+    <section class="filter-bar" data-fx-reveal>
         <div class="container">
             <div class="filter-bar-container">
                 <!-- Search -->
@@ -431,5 +432,6 @@
     <script src="assets/js/task-preview-drawer.js"></script>
     <script type="module" src="assets/js/task-hall-main.js"></script>
     <script src="assets/js/task-hall.js"></script>
+    <script src="assets/js/fx.js"></script>
 </body>
 </html>

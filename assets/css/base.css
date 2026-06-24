@@ -75,6 +75,28 @@
 
     /* Sidebar Width */
     --sidebar-width: 280px;
+
+    /* === 新增设计令牌（视觉升级，不删除既有变量）=== */
+    /* 渐变 */
+    --grad-primary: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 55%, #06B6D4 100%);
+    --grad-primary-soft: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.12) 55%, rgba(6, 182, 212, 0.12));
+    --grad-text: linear-gradient(120deg, #2563EB, #8B5CF6 55%, #0891B2);
+    --grad-dark: linear-gradient(135deg, #0D0C22 0%, #1e1b4b 50%, #2563EB 100%);
+
+    /* 辉光阴影 */
+    --shadow-glow: 0 8px 30px rgba(59, 130, 246, 0.25);
+    --shadow-glow-lg: 0 14px 44px rgba(59, 130, 246, 0.30);
+    --shadow-soft: 0 10px 40px rgba(13, 12, 34, 0.08);
+
+    /* 缓动曲线 */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* 按钮统一高度 */
+    --btn-height: 44px;
+    --btn-height-sm: 36px;
+    --btn-height-lg: 52px;
 }
 
 /* ============================================
@@ -94,10 +116,16 @@ html {
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 15px;
-    line-height: 1.5;
+    line-height: 1.6;
     color: var(--color-text-primary);
-    background: var(--color-bg);
+    background:
+        radial-gradient(1000px 600px at 100% -5%, rgba(59, 130, 246, 0.05), transparent 60%),
+        radial-gradient(900px 600px at 0% 0%, rgba(139, 92, 246, 0.05), transparent 55%),
+        var(--color-bg);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
 }
 
 img {
@@ -155,9 +183,10 @@ button, input, textarea, select {
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.15;
     color: var(--color-text-primary);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
 }
 
 h1 { font-size: 48px; }

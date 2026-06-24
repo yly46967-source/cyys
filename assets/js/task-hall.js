@@ -290,14 +290,71 @@ function renderActiveFilters() {
 /**
  * Render a single task card
  */
+function getCategoryIconSvg(category) {
+    const paths = {
+        web: '<path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m-9 9h18M3 8.25h18M3 15.75h18"/>',
+        mobile: '<path d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/>',
+        ai: '<path d="M9 3v2m6-2v2M9 19v2m6-2v2M3 9h2m-2 6h2m14-6h2m-2 6h2M7 7h10v10H7z"/>',
+        'design-system': '<path d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88"/>',
+        other: '<path d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/>'
+    };
+    return paths[category] || paths.other;
+}
+
+const AVATAR_PHOTOS = [
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&h=80&fit=crop&crop=faces',
+    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&crop=faces'
+];
+
+function initialAvatarDataUri(name) {
+    const safe = (name || '?').trim() || '?';
+    const ch = safe.charAt(0).toUpperCase();
+    const colors = ['#3B82F6', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EC4899', '#6366F1'];
+    let h = 0;
+    for (let i = 0; i < safe.length; i++) h = safe.charCodeAt(i) + ((h << 5) - h);
+    const color = colors[Math.abs(h) % colors.length];
+    const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='80' height='80' fill='" + color + "'/><text x='50%' y='50%' dy='.35em' text-anchor='middle' fill='#ffffff' font-family='Inter,sans-serif' font-size='34' font-weight='600'>" + ch + "</text></svg>";
+    return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
+function publisherAvatarUrl(pubId, name) {
+    const m = /(\d+)$/.exec(pubId || '');
+    if (m) return AVATAR_PHOTOS[(parseInt(m[1], 10) - 1) % AVATAR_PHOTOS.length];
+    return initialAvatarDataUri(name);
+}
+
 function renderTaskCard(task) {
     const statusInfo = getStatusInfo(task.status);
     const categoryInfo = getCategoryInfo(task.category);
+    const pubId = (task.publisher && task.publisher.id) || '';
+    const pubName = (task.publisher && task.publisher.name) ? task.publisher.name : task.clientName;
+    const pubRating = (task.publisher && typeof task.publisher.rating === 'number') ? task.publisher.rating.toFixed(1) : '';
+    const isVerified = !!(task.publisher && task.publisher.verified);
+    const avatarFallback = initialAvatarDataUri(pubName);
+    const avatarUrl = publisherAvatarUrl(pubId, pubName);
 
     return `
         <article class="task-card" data-task-id="${task.id}">
             <div class="task-card__header">
-                <h3 class="task-card__title">${escapeHtml(task.title)}</h3>
+                <div class="task-card__lead">
+                    <span class="task-card__cat task-card__cat--${task.category}" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${getCategoryIconSvg(task.category)}</svg>
+                    </span>
+                    <h3 class="task-card__title">${escapeHtml(task.title)}</h3>
+                </div>
                 <div class="task-card__status">
                     <span class="status-badge status-badge--${task.status}">
                         ${statusInfo?.label || task.status}
@@ -307,10 +364,10 @@ function renderTaskCard(task) {
             <p class="task-card__summary">${escapeHtml(task.summary)}</p>
             <div class="task-card__meta">
                 <div class="task-card__client">
-                    <svg class="task-card__client-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                    ${escapeHtml(task.clientName)}
+                    <img class="task-card__avatar" src="${avatarUrl}" alt="${escapeHtml(pubName)}" loading="lazy" onerror="this.onerror=null;this.src='${avatarFallback}'">
+                    <span class="task-card__client-name">${escapeHtml(task.clientName)}</span>
+                    ${isVerified ? '<span class="task-card__verified" title="已认证企业" aria-label="已认证企业"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>' : ''}
+                    ${pubRating ? `<span class="task-card__rating">★ ${pubRating}</span>` : ''}
                 </div>
             </div>
             <div class="task-card__tags">

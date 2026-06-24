@@ -14,7 +14,24 @@
 
 | 文件 | 职责 | 依赖 |
 |------|------|------|
-| `style.css` | 主样式文件，包含所有视觉定义 | 无 (原生 CSS) |
+| `base.css` | 基础样式：CSS 变量（含渐变/辉光/缓动/按钮高度令牌）、重置、容器、排版 | 无 (原生 CSS) |
+| `components.css` | 共享组件：导航（玻璃拟态）、按钮、表单、标签、卡片、分页、抽屉 | base.css |
+| `home.css` | 首页专用：Hero/作品瀑布流/服务标签/统计/CTA/联系表单 | base.css, components.css |
+| `task-hall.css` | 任务大厅专用样式 | base.css, components.css |
+| `effects.css` | **高级动效层**：光标光晕/粒子/着色器挂载/磁吸/滚动揭示/视差/页面过渡遮罩/进度条 | base.css |
+
+### 动效层 (effects.css) 关键钩子
+
+仅新增规则，不覆盖既有组件样式；与 `assets/js/fx.js` 配合：
+
+- `html.fx-ready` — JS 成功启动后启用滚动揭示初态（未启用时内容完全可见，避免白屏）
+- `#fxCursor` / `#fxParticles` — 光标光晕与粒子 canvas（由 fx.js 注入）
+- `.fx-progress` — 顶部滚动进度条
+- `.fx-magnetic` — 磁吸容器（自动赋予 `.btn-primary/.btn-white/.btn-view`）
+- `[data-fx-shader]` — 着色器挂载点（`.fx-shader-layer` 为注入的 canvas）
+- `[data-fx-reveal]` (+ `.fx-in-view`) — 滚动揭示，支持 `="left|right|scale"` 变体与 `--fx-delay` 错峰
+- `[data-fx-parallax]` / `[data-fx-count]`(+`data-fx-suffix`) — 视差 / 数字滚动
+- `.fx-transition`(+ `--cover`/`--no-transition`) — 跨页遮罩过渡
 
 ---
 

@@ -20,9 +20,12 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    border-bottom: 1px solid rgba(231, 231, 233, 0.7);
     height: 64px;
+    transition: background 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
 }
 
 .navbar .container {
@@ -33,10 +36,14 @@
 }
 
 .brand {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
     color: var(--color-text-primary);
-    letter-spacing: -0.02em;
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .nav-links {
@@ -45,10 +52,30 @@
 }
 
 .nav-link {
+    position: relative;
     color: var(--color-text-secondary);
     font-size: 15px;
     font-weight: 500;
     transition: color var(--transition-fast);
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    height: 2px;
+    width: 100%;
+    background: var(--grad-primary);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.3s var(--ease-smooth);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    transform: scaleX(1);
 }
 
 .nav-link:hover,
@@ -87,12 +114,25 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 20px;
+    gap: 8px;
+    height: var(--btn-height);
+    padding: 0 22px;
     font-size: 15px;
     font-weight: 600;
+    line-height: 1;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    white-space: nowrap;
+    transition:
+        transform 0.25s var(--ease-smooth),
+        box-shadow 0.25s var(--ease-smooth),
+        background-color 0.25s var(--ease-smooth),
+        background-position 0.5s var(--ease-smooth),
+        border-color 0.25s var(--ease-smooth),
+        color 0.25s var(--ease-smooth);
 }
 
 .btn:disabled {
@@ -100,43 +140,73 @@
     cursor: not-allowed;
 }
 
+.btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-primary-light), var(--shadow-glow);
+}
+
+/* 按钮悬停时的光带扫过（z-index:-1 置于背景与文字之间） */
+.btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+    transform: translateX(-130%);
+    transition: transform 0.65s var(--ease-smooth);
+    pointer-events: none;
+}
+
+.btn:hover:not(:disabled)::before {
+    transform: translateX(130%);
+}
+
 .btn-primary {
     color: var(--color-bg);
-    background: var(--color-primary);
+    background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+    background-size: 170% 170%;
+    background-position: 0% 0%;
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.28);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: var(--color-primary-hover);
+    background-position: 100% 100%;
+    box-shadow: var(--shadow-glow-lg);
 }
 
 .btn-secondary {
     color: var(--color-text-primary);
     background: var(--color-bg);
     border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-xs);
 }
 
 .btn-secondary:hover:not(:disabled) {
-    border-color: var(--color-text-secondary);
-    background: var(--color-bg-secondary);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.12);
 }
 
 .btn-white {
     color: var(--color-primary);
     background: var(--color-bg);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .btn-white:hover:not(:disabled) {
-    background: var(--color-bg-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
 }
 
 .btn-outline {
     color: var(--color-bg);
     background: transparent;
-    border: 1px solid var(--color-bg);
+    border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
 .btn-outline:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--color-bg);
 }
 
 .btn-ghost {
@@ -145,17 +215,19 @@
 }
 
 .btn-ghost:hover:not(:disabled) {
-    color: var(--color-text-primary);
-    background: var(--color-bg-secondary);
+    color: var(--color-primary);
+    background: var(--color-primary-light);
 }
 
 .btn-sm {
-    padding: 6px 12px;
+    height: var(--btn-height-sm);
+    padding: 0 14px;
     font-size: 13px;
 }
 
 .btn-lg {
-    padding: 12px 24px;
+    height: var(--btn-height-lg);
+    padding: 0 28px;
     font-size: 16px;
 }
 
@@ -316,6 +388,13 @@
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
     overflow: hidden;
+    transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-soft);
+    border-color: rgba(59, 130, 246, 0.28);
 }
 
 .card-body {
@@ -709,6 +788,7 @@
     color: var(--color-bg);
     border-color: var(--color-primary);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
 }
 
 .back-to-top svg {
