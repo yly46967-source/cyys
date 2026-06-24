@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+.wrangler/
+*.log
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+
+# Local source material; keep outside product commits.
+项目背景/

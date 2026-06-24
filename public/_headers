@@ -1,0 +1,7 @@
+# Cloudflare Pages 缓存策略
+# Next 静态导出的带哈希资源可永久缓存；HTML 保持协商/短缓存。
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
